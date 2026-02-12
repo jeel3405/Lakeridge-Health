@@ -1,0 +1,6 @@
+That was a problem which , I am getting and solved .
+The issue was that the mssql package's standard configuration with trustedConnection: true doesn't work well with Windows Authentication. The fix was to:
+1. Install msnodesqlv8 - A native Windows driver for SQL Server
+2. Use mssql/msnodesqlv8 - Import the mssql package with the msnodesqlv8 driver
+3. Use an ODBC connection string - This format works reliably with Windows Authentication
+
