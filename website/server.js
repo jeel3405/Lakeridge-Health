@@ -12,7 +12,12 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(__dirname));
+
+// Serve index.html for the root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // ==========================================
 // Database Configuration
@@ -634,3 +639,6 @@ app.listen(PORT, async () => {
         console.log('   The website will work but data won\'t be saved to the database.\n');
     }
 });
+
+// Export for Vercel serverless
+module.exports = app;
