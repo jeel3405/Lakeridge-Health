@@ -36,6 +36,21 @@ const dbConfig = {
 
 let pool;
 
+// Get database connection (creates one if not exists)
+async function getPool() {
+    if (pool) {
+        return pool;
+    }
+    try {
+        pool = await sql.connect(dbConfig);
+        console.log('✅ Connected to Azure SQL database');
+        return pool;
+    } catch (err) {
+        console.error('❌ Database connection failed:', err.message);
+        throw err;
+    }
+}
+
 async function connectDB() {
     try {
         pool = await sql.connect(dbConfig);
@@ -52,7 +67,8 @@ async function connectDB() {
 // ==========================================
 app.get('/api/patients', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Patients ORDER BY PatientID');
+        const db = await getPool();
+        const result = await db.request().query('SELECT * FROM Patients ORDER BY PatientID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -64,10 +80,10 @@ app.post('/api/patients', async (req, res) => {
         const { LastName, FirstName, DOB, Address, Gender, InsuranceID } = req.body;
         
         // Get next PatientID
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(PatientID), 0) + 1 AS NextID FROM Patients');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(PatientID), 0) + 1 AS NextID FROM Patients');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('PatientID', sql.Int, nextId)
             .input('LastName', sql.VarChar(50), LastName)
             .input('FirstName', sql.VarChar(50), FirstName)
@@ -88,7 +104,7 @@ app.put('/api/patients/:id', async (req, res) => {
         const { LastName, FirstName, DOB, Address, Gender, InsuranceID } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('PatientID', sql.Int, id)
             .input('LastName', sql.VarChar(50), LastName)
             .input('FirstName', sql.VarChar(50), FirstName)
@@ -109,7 +125,7 @@ app.put('/api/patients/:id', async (req, res) => {
 
 app.delete('/api/patients/:id', async (req, res) => {
     try {
-        await pool.request()
+        await (await getPool()).request()
             .input('PatientID', sql.Int, req.params.id)
             .query('DELETE FROM Patients WHERE PatientID = @PatientID');
         
@@ -124,7 +140,7 @@ app.delete('/api/patients/:id', async (req, res) => {
 // ==========================================
 app.get('/api/physicians', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Physicians ORDER BY PhysicianID');
+        const result = await (await getPool()).request().query('SELECT * FROM Physicians ORDER BY PhysicianID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -135,10 +151,10 @@ app.post('/api/physicians', async (req, res) => {
     try {
         const { FirstName, LastName, Specialization, Email } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(PhysicianID), 0) + 1 AS NextID FROM Physicians');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(PhysicianID), 0) + 1 AS NextID FROM Physicians');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('PhysicianID', sql.Int, nextId)
             .input('FirstName', sql.VarChar(50), FirstName)
             .input('LastName', sql.VarChar(50), LastName)
@@ -157,7 +173,7 @@ app.put('/api/physicians/:id', async (req, res) => {
         const { FirstName, LastName, Specialization, Email } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('PhysicianID', sql.Int, id)
             .input('FirstName', sql.VarChar(50), FirstName)
             .input('LastName', sql.VarChar(50), LastName)
@@ -176,7 +192,7 @@ app.put('/api/physicians/:id', async (req, res) => {
 
 app.delete('/api/physicians/:id', async (req, res) => {
     try {
-        await pool.request()
+        await (await getPool()).request()
             .input('PhysicianID', sql.Int, req.params.id)
             .query('DELETE FROM Physicians WHERE PhysicianID = @PhysicianID');
         
@@ -191,7 +207,7 @@ app.delete('/api/physicians/:id', async (req, res) => {
 // ==========================================
 app.get('/api/appointments', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Appointments ORDER BY AppointmentID');
+        const result = await (await getPool()).request().query('SELECT * FROM Appointments ORDER BY AppointmentID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -202,10 +218,10 @@ app.post('/api/appointments', async (req, res) => {
     try {
         const { PatientID, PhysicianID, Date, Time, Status, ReasonForVisit } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(AppointmentID), 0) + 1 AS NextID FROM Appointments');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(AppointmentID), 0) + 1 AS NextID FROM Appointments');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('AppointmentID', sql.Int, nextId)
             .input('PatientID', sql.Int, PatientID)
             .input('PhysicianID', sql.Int, PhysicianID)
@@ -226,7 +242,7 @@ app.put('/api/appointments/:id', async (req, res) => {
         const { PatientID, PhysicianID, Date, Time, Status, ReasonForVisit } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('AppointmentID', sql.Int, id)
             .input('PatientID', sql.Int, PatientID)
             .input('PhysicianID', sql.Int, PhysicianID)
@@ -247,7 +263,7 @@ app.put('/api/appointments/:id', async (req, res) => {
 
 app.delete('/api/appointments/:id', async (req, res) => {
     try {
-        await pool.request()
+        await (await getPool()).request()
             .input('AppointmentID', sql.Int, req.params.id)
             .query('DELETE FROM Appointments WHERE AppointmentID = @AppointmentID');
         
@@ -262,7 +278,7 @@ app.delete('/api/appointments/:id', async (req, res) => {
 // ==========================================
 app.get('/api/admissions', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Admissions ORDER BY AdmissionID');
+        const result = await (await getPool()).request().query('SELECT * FROM Admissions ORDER BY AdmissionID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -273,10 +289,10 @@ app.post('/api/admissions', async (req, res) => {
     try {
         const { PatientID, RoomID, AdmissionDate, InsuranceVerified, TreatmentPlan } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(AdmissionID), 0) + 1 AS NextID FROM Admissions');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(AdmissionID), 0) + 1 AS NextID FROM Admissions');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('AdmissionID', sql.Int, nextId)
             .input('PatientID', sql.Int, PatientID)
             .input('RoomID', sql.Int, RoomID)
@@ -296,7 +312,7 @@ app.put('/api/admissions/:id', async (req, res) => {
         const { PatientID, RoomID, AdmissionDate, InsuranceVerified, TreatmentPlan } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('AdmissionID', sql.Int, id)
             .input('PatientID', sql.Int, PatientID)
             .input('RoomID', sql.Int, RoomID)
@@ -316,7 +332,7 @@ app.put('/api/admissions/:id', async (req, res) => {
 
 app.delete('/api/admissions/:id', async (req, res) => {
     try {
-        await pool.request()
+        await (await getPool()).request()
             .input('AdmissionID', sql.Int, req.params.id)
             .query('DELETE FROM Admissions WHERE AdmissionID = @AdmissionID');
         
@@ -331,7 +347,7 @@ app.delete('/api/admissions/:id', async (req, res) => {
 // ==========================================
 app.get('/api/rooms', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Rooms ORDER BY RoomID');
+        const result = await (await getPool()).request().query('SELECT * FROM Rooms ORDER BY RoomID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -342,10 +358,10 @@ app.post('/api/rooms', async (req, res) => {
     try {
         const { RoomType, Capacity, Occupancy, RoomsAvailable } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(RoomID), 0) + 1 AS NextID FROM Rooms');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(RoomID), 0) + 1 AS NextID FROM Rooms');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('RoomID', sql.Int, nextId)
             .input('RoomType', sql.VarChar(20), RoomType)
             .input('Capacity', sql.Int, Capacity)
@@ -364,7 +380,7 @@ app.put('/api/rooms/:id', async (req, res) => {
         const { RoomType, Capacity, Occupancy, RoomsAvailable } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('RoomID', sql.Int, id)
             .input('RoomType', sql.VarChar(20), RoomType)
             .input('Capacity', sql.Int, Capacity)
@@ -386,7 +402,7 @@ app.put('/api/rooms/:id', async (req, res) => {
 // ==========================================
 app.get('/api/billing', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Billing ORDER BY BillingID');
+        const result = await (await getPool()).request().query('SELECT * FROM Billing ORDER BY BillingID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -397,10 +413,10 @@ app.post('/api/billing', async (req, res) => {
     try {
         const { PatientID, TotalAmount, InvoiceDate, DueDate, PaymentStatus } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(BillingID), 0) + 1 AS NextID FROM Billing');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(BillingID), 0) + 1 AS NextID FROM Billing');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('BillingID', sql.Int, nextId)
             .input('PatientID', sql.Int, PatientID)
             .input('TotalAmount', sql.Decimal(10, 2), TotalAmount)
@@ -420,7 +436,7 @@ app.put('/api/billing/:id', async (req, res) => {
         const { PatientID, TotalAmount, InvoiceDate, DueDate, PaymentStatus } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('BillingID', sql.Int, id)
             .input('PatientID', sql.Int, PatientID)
             .input('TotalAmount', sql.Decimal(10, 2), TotalAmount)
@@ -443,7 +459,7 @@ app.put('/api/billing/:id', async (req, res) => {
 // ==========================================
 app.get('/api/insurance', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Insurance ORDER BY InsuranceID');
+        const result = await (await getPool()).request().query('SELECT * FROM Insurance ORDER BY InsuranceID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -454,10 +470,10 @@ app.post('/api/insurance', async (req, res) => {
     try {
         const { ProviderName, Province, City, PostalCode, PhoneNumber, Email } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(InsuranceID), 0) + 1 AS NextID FROM Insurance');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(InsuranceID), 0) + 1 AS NextID FROM Insurance');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('InsuranceID', sql.Int, nextId)
             .input('ProviderName', sql.VarChar(100), ProviderName)
             .input('Province', sql.VarChar(50), Province)
@@ -478,7 +494,7 @@ app.put('/api/insurance/:id', async (req, res) => {
         const { ProviderName, Province, City, PostalCode, PhoneNumber, Email } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('InsuranceID', sql.Int, id)
             .input('ProviderName', sql.VarChar(100), ProviderName)
             .input('Province', sql.VarChar(50), Province)
@@ -502,7 +518,7 @@ app.put('/api/insurance/:id', async (req, res) => {
 // ==========================================
 app.get('/api/records', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM PatientRecords ORDER BY RecordID');
+        const result = await (await getPool()).request().query('SELECT * FROM PatientRecords ORDER BY RecordID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -513,10 +529,10 @@ app.post('/api/records', async (req, res) => {
     try {
         const { PatientID, VisitDate, Treatment, FollowUpDate } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(RecordID), 0) + 1 AS NextID FROM PatientRecords');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(RecordID), 0) + 1 AS NextID FROM PatientRecords');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('RecordID', sql.Int, nextId)
             .input('PatientID', sql.Int, PatientID)
             .input('VisitDate', sql.Date, VisitDate)
@@ -535,7 +551,7 @@ app.put('/api/records/:id', async (req, res) => {
         const { PatientID, VisitDate, Treatment, FollowUpDate } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('RecordID', sql.Int, id)
             .input('PatientID', sql.Int, PatientID)
             .input('VisitDate', sql.Date, VisitDate)
@@ -557,7 +573,7 @@ app.put('/api/records/:id', async (req, res) => {
 // ==========================================
 app.get('/api/claims', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM InsuranceClaims ORDER BY InsuranceClaimID');
+        const result = await (await getPool()).request().query('SELECT * FROM InsuranceClaims ORDER BY InsuranceClaimID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -568,10 +584,10 @@ app.post('/api/claims', async (req, res) => {
     try {
         const { PatientID, InsuranceID, ClaimAmount, ClaimDate, ApprovalDate } = req.body;
         
-        const maxIdResult = await pool.request().query('SELECT ISNULL(MAX(InsuranceClaimID), 0) + 1 AS NextID FROM InsuranceClaims');
+        const maxIdResult = await (await getPool()).request().query('SELECT ISNULL(MAX(InsuranceClaimID), 0) + 1 AS NextID FROM InsuranceClaims');
         const nextId = maxIdResult.recordset[0].NextID;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('InsuranceClaimID', sql.Int, nextId)
             .input('PatientID', sql.Int, PatientID)
             .input('InsuranceID', sql.Int, InsuranceID)
@@ -591,7 +607,7 @@ app.put('/api/claims/:id', async (req, res) => {
         const { PatientID, InsuranceID, ClaimAmount, ClaimDate, ApprovalDate } = req.body;
         const { id } = req.params;
         
-        await pool.request()
+        await (await getPool()).request()
             .input('InsuranceClaimID', sql.Int, id)
             .input('PatientID', sql.Int, PatientID)
             .input('InsuranceID', sql.Int, InsuranceID)
@@ -614,7 +630,7 @@ app.put('/api/claims/:id', async (req, res) => {
 // ==========================================
 app.get('/api/beds', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Bed ORDER BY BedID');
+        const result = await (await getPool()).request().query('SELECT * FROM Bed ORDER BY BedID');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
