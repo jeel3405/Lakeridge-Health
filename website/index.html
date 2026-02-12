@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lakeridge Health Hospital - Database Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <span>Lakeridge Health</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </li>
+            <li class="nav-item" data-section="patients">
+                <i class="fas fa-users"></i>
+                <span>Patients</span>
+            </li>
+            <li class="nav-item" data-section="physicians">
+                <i class="fas fa-user-md"></i>
+                <span>Physicians</span>
+            </li>
+            <li class="nav-item" data-section="appointments">
+                <i class="fas fa-calendar-check"></i>
+                <span>Appointments</span>
+            </li>
+            <li class="nav-item" data-section="admissions">
+                <i class="fas fa-bed"></i>
+                <span>Admissions</span>
+            </li>
+            <li class="nav-item" data-section="rooms">
+                <i class="fas fa-door-open"></i>
+                <span>Rooms & Beds</span>
+            </li>
+            <li class="nav-item" data-section="billing">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Billing</span>
+            </li>
+            <li class="nav-item" data-section="insurance">
+                <i class="fas fa-shield-alt"></i>
+                <span>Insurance</span>
+            </li>
+            <li class="nav-item" data-section="records">
+                <i class="fas fa-folder-open"></i>
+                <span>Patient Records</span>
+            </li>
+            <li class="nav-item" data-section="claims">
+                <i class="fas fa-file-medical"></i>
+                <span>Insurance Claims</span>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>© 2024 LRCH Database</p>
+            <p class="team">Jeel | Kartik | Harshil</p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Search patients, physicians, rooms...">
+            </div>
+            <div class="header-right">
+                <div class="user-dropdown">
+                    <div class="user-info" onclick="toggleUserDropdown()">
+                        <img id="userAvatar" src="https://ui-avatars.com/api/?name=Admin&background=1e88e5&color=fff" alt="User">
+                        <span id="currentUserName">Administrator</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="userDropdownMenu" class="dropdown-menu">
+                        <div class="dropdown-header">
+                            <span>Switch User (Demo)</span>
+                            <small id="currentRoleBadge" class="role-badge admin">Administrator</small>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" onclick="switchUser('admin')">
+                            <i class="fas fa-user-shield"></i>
+                            <div>
+                                <span>Administrator</span>
+                                <small>Full access</small>
+                            </div>
+                        </div>
+                        <div class="dropdown-item" onclick="switchUser('dwilson')">
+                            <i class="fas fa-user-md"></i>
+                            <div>
+                                <span>Dr. David Wilson</span>
+                                <small>Physician - Can edit patients</small>
+                            </div>
+                        </div>
+                        <div class="dropdown-item" onclick="switchUser('sbrown')">
+                            <i class="fas fa-user-md"></i>
+                            <div>
+                                <span>Dr. Sarah Brown</span>
+                                <small>Physician - Can edit patients</small>
+                            </div>
+                        </div>
+                        <div class="dropdown-item" onclick="switchUser('jreceptionist')">
+                            <i class="fas fa-user"></i>
+                            <div>
+                                <span>Jane Receptionist</span>
+                                <small>Viewer - Read only</small>
+                            </div>
+                        </div>
+                        <div class="dropdown-item" onclick="switchUser('jsmith')">
+                            <i class="fas fa-user-injured"></i>
+                            <div>
+                                <span>John Smith</span>
+                                <small>Patient - Limited access</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <h1 class="section-title">Dashboard</h1>
+            <div class="stats-grid">
+                <div class="stat-card patients">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalPatients">50</h3>
+                        <p>Total Patients</p>
+                    </div>
+                </div>
+                <div class="stat-card physicians">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalPhysicians">5</h3>
+                        <p>Physicians</p>
+                    </div>
+                </div>
+                <div class="stat-card appointments">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalAppointments">50</h3>
+                        <p>Appointments</p>
+                    </div>
+                </div>
+                <div class="stat-card rooms">
+                    <div class="stat-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="availableRooms">5</h3>
+                        <p>Available Rooms</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card recent-appointments">
+                    <h2><i class="fas fa-calendar"></i> Recent Appointments</h2>
+                    <table id="recentAppointmentsTable">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Physician</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="card room-status">
+                    <h2><i class="fas fa-door-open"></i> Room Availability</h2>
+                    <div id="roomStatusChart"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patients Section -->
+        <section id="patients" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Patient Management</h1>
+                <button class="btn-primary" onclick="openModal('patientModal')">
+                    <i class="fas fa-plus"></i> Add Patient
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="patientSearch" placeholder="Search by name, ID, or address...">
+                <select id="genderFilter">
+                    <option value="">All Genders</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="patientsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>Gender</th>
+                            <th>Address</th>
+                            <th>Insurance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Physicians Section -->
+        <section id="physicians" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Physician Management</h1>
+                <button class="btn-primary" onclick="openModal('physicianModal')">
+                    <i class="fas fa-plus"></i> Add Physician
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="physicianSearch" placeholder="Search by name or specialization...">
+                <select id="specializationFilter">
+                    <option value="">All Specializations</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="physiciansTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Specialization</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Appointments Section -->
+        <section id="appointments" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Appointment Management</h1>
+                <button class="btn-primary" onclick="openModal('appointmentModal')">
+                    <i class="fas fa-plus"></i> Book Appointment
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="appointmentSearch" placeholder="Search appointments...">
+                <input type="date" id="appointmentDateFilter">
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="appointmentsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Physician</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Admissions Section -->
+        <section id="admissions" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Admission Management</h1>
+                <button class="btn-primary" onclick="openModal('admissionModal')">
+                    <i class="fas fa-plus"></i> New Admission
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="admissionSearch" placeholder="Search admissions...">
+                <select id="insuranceVerifiedFilter">
+                    <option value="">All Verification Status</option>
+                    <option value="1">Verified</option>
+                    <option value="0">Not Verified</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="admissionsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Room</th>
+                            <th>Admission Date</th>
+                            <th>Insurance Verified</th>
+                            <th>Treatment Plan</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Rooms Section -->
+        <section id="rooms" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Room & Bed Management</h1>
+                <button class="btn-primary" onclick="openModal('roomModal')">
+                    <i class="fas fa-plus"></i> Add Room
+                </button>
+            </div>
+            <div class="rooms-grid">
+                <div class="card">
+                    <h2><i class="fas fa-door-open"></i> Rooms</h2>
+                    <div class="filter-bar">
+                        <input type="text" id="roomSearch" placeholder="Search rooms...">
+                        <select id="roomTypeFilter">
+                            <option value="">All Room Types</option>
+                        </select>
+                    </div>
+                    <table id="roomsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Capacity</th>
+                                <th>Occupancy</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-bed"></i> Beds</h2>
+                    <div class="filter-bar">
+                        <input type="text" id="bedSearch" placeholder="Search beds...">
+                    </div>
+                    <table id="bedsTable">
+                        <thead>
+                            <tr>
+                                <th>Bed ID</th>
+                                <th>Room ID</th>
+                                <th>Bed Number</th>
+                                <th>Patient</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Billing Section -->
+        <section id="billing" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Billing Management</h1>
+                <button class="btn-primary" onclick="openModal('billingModal')">
+                    <i class="fas fa-plus"></i> Create Invoice
+                </button>
+            </div>
+            <div class="billing-stats">
+                <div class="stat-card">
+                    <h4>Total Outstanding</h4>
+                    <h2 id="totalOutstanding">$0.00</h2>
+                </div>
+                <div class="stat-card">
+                    <h4>Paid This Month</h4>
+                    <h2 id="paidThisMonth">$0.00</h2>
+                </div>
+                <div class="stat-card">
+                    <h4>Pending Invoices</h4>
+                    <h2 id="pendingInvoices">0</h2>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="billingSearch" placeholder="Search billing records...">
+                <select id="paymentStatusFilter">
+                    <option value="">All Payment Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Overdue">Overdue</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="billingTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Total Amount</th>
+                            <th>Invoice Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Insurance Section -->
+        <section id="insurance" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Insurance Providers</h1>
+                <button class="btn-primary" onclick="openModal('insuranceModal')">
+                    <i class="fas fa-plus"></i> Add Provider
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="insuranceSearch" placeholder="Search insurance providers...">
+                <select id="provinceFilter">
+                    <option value="">All Provinces</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="insuranceTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Provider Name</th>
+                            <th>Province</th>
+                            <th>City</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Patient Records Section -->
+        <section id="records" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Patient Records</h1>
+                <button class="btn-primary" onclick="openModal('recordModal')">
+                    <i class="fas fa-plus"></i> Add Record
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="recordSearch" placeholder="Search patient records...">
+                <input type="date" id="recordDateFilter">
+            </div>
+            <div class="table-container">
+                <table id="recordsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Visit Date</th>
+                            <th>Treatment</th>
+                            <th>Follow-Up Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Insurance Claims Section -->
+        <section id="claims" class="content-section">
+            <div class="section-header">
+                <h1 class="section-title">Insurance Claims</h1>
+                <button class="btn-primary" onclick="openModal('claimModal')">
+                    <i class="fas fa-plus"></i> New Claim
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="claimSearch" placeholder="Search claims...">
+                <select id="claimStatusFilter">
+                    <option value="">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="claimsTable">
+                    <thead>
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Patient</th>
+                            <th>Insurance</th>
+                            <th>Amount</th>
+                            <th>Claim Date</th>
+                            <th>Approval Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Templates -->
+    <div id="patientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Add/Edit Patient</h2>
+                <span class="close" onclick="closeModal('patientModal')">&times;</span>
+            </div>
+            <form id="patientForm">
+                <input type="hidden" id="patientId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="patientFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="patientLastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="patientDOB" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="patientGender" required>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="O">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" id="patientAddress" required>
+                </div>
+                <div class="form-group">
+                    <label>Insurance Provider</label>
+                    <select id="patientInsurance"></select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('patientModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Patient</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="physicianModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-md"></i> Add/Edit Physician</h2>
+                <span class="close" onclick="closeModal('physicianModal')">&times;</span>
+            </div>
+            <form id="physicianForm">
+                <input type="hidden" id="physicianId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="physicianFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="physicianLastName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Specialization</label>
+                    <input type="text" id="physicianSpecialization" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="physicianEmail" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('physicianModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Physician</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-plus"></i> Book Appointment</h2>
+                <span class="close" onclick="closeModal('appointmentModal')">&times;</span>
+            </div>
+            <form id="appointmentForm">
+                <input type="hidden" id="appointmentId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient</label>
+                        <select id="appointmentPatient" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Physician</label>
+                        <select id="appointmentPhysician" required></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="time" id="appointmentTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Reason for Visit</label>
+                    <textarea id="appointmentReason" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="appointmentStatus" required>
+                        <option value="Scheduled">Scheduled</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('appointmentModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admission Modal -->
+    <div id="admissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-bed"></i> New Admission</h2>
+                <span class="close" onclick="closeModal('admissionModal')">&times;</span>
+            </div>
+            <form id="admissionForm">
+                <input type="hidden" id="admissionId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient</label>
+                        <select id="admissionPatient" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Room</label>
+                        <select id="admissionRoom" required></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Admission Date</label>
+                        <input type="date" id="admissionDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Insurance Verified</label>
+                        <select id="admissionInsuranceVerified" required>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Treatment Plan</label>
+                    <textarea id="admissionTreatmentPlan" rows="3" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('admissionModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Admission</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Room Modal -->
+    <div id="roomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-door-open"></i> Add Room</h2>
+                <span class="close" onclick="closeModal('roomModal')">&times;</span>
+            </div>
+            <form id="roomForm">
+                <input type="hidden" id="roomId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Room Type</label>
+                        <select id="roomType" required>
+                            <option value="ICU">ICU</option>
+                            <option value="Private">Private</option>
+                            <option value="Semi-Private">Semi-Private</option>
+                            <option value="Ward">Ward</option>
+                            <option value="Operating Room">Operating Room</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacity</label>
+                        <input type="number" id="roomCapacity" min="1" max="10" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('roomModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Billing Modal -->
+    <div id="billingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Create Invoice</h2>
+                <span class="close" onclick="closeModal('billingModal')">&times;</span>
+            </div>
+            <form id="billingForm">
+                <input type="hidden" id="billingId">
+                <div class="form-group">
+                    <label>Patient</label>
+                    <select id="billingPatient" required></select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Total Amount ($)</label>
+                        <input type="number" id="billingAmount" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Status</label>
+                        <select id="billingStatus" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Overdue">Overdue</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Invoice Date</label>
+                        <input type="date" id="billingInvoiceDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="date" id="billingDueDate" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('billingModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Invoice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Insurance Modal -->
+    <div id="insuranceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-shield-alt"></i> Add Insurance Provider</h2>
+                <span class="close" onclick="closeModal('insuranceModal')">&times;</span>
+            </div>
+            <form id="insuranceForm">
+                <input type="hidden" id="insuranceId">
+                <div class="form-group">
+                    <label>Provider Name</label>
+                    <input type="text" id="insuranceProviderName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Province</label>
+                        <input type="text" id="insuranceProvince" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="insuranceCity" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Postal Code</label>
+                        <input type="text" id="insurancePostalCode" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="insurancePhone" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="insuranceEmail" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('insuranceModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Provider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Patient Record Modal -->
+    <div id="recordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-folder-open"></i> Add Patient Record</h2>
+                <span class="close" onclick="closeModal('recordModal')">&times;</span>
+            </div>
+            <form id="recordForm">
+                <input type="hidden" id="recordId">
+                <div class="form-group">
+                    <label>Patient</label>
+                    <select id="recordPatient" required></select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Visit Date</label>
+                        <input type="date" id="recordVisitDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Follow-Up Date</label>
+                        <input type="date" id="recordFollowUpDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Treatment</label>
+                    <textarea id="recordTreatment" rows="3" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('recordModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Insurance Claim Modal -->
+    <div id="claimModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-medical"></i> Submit Claim</h2>
+                <span class="close" onclick="closeModal('claimModal')">&times;</span>
+            </div>
+            <form id="claimForm">
+                <input type="hidden" id="claimId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient</label>
+                        <select id="claimPatient" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Insurance Provider</label>
+                        <select id="claimInsurance" required></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Claim Amount ($)</label>
+                        <input type="number" id="claimAmount" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Claim Date</label>
+                        <input type="date" id="claimDate" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('claimModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit Claim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="detailsModalTitle"><i class="fas fa-info-circle"></i> Details</h2>
+                <span class="close" onclick="closeModal('detailsModal')">&times;</span>
+            </div>
+            <div id="detailsContent"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
