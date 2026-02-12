@@ -3,7 +3,7 @@
 // ==========================================
 // This file handles communication with the backend server
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = '/api';
 
 // Check if server is available
 let isServerConnected = false;
