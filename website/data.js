@@ -1,15 +1,4 @@
-// ==========================================
-// Lakeridge Health Hospital - Database Data
-// ==========================================
 
-// ==========================================
-// Authentication & User Roles Data
-// ==========================================
-// Role permissions:
-// - administrator: Full access to all features
-// - physician: Can view and EDIT patient data, appointments, admissions, records
-// - viewer: Can only VIEW data, no edit permissions
-// - patient: Can only view their own data
 
 const usersData = [
     // Administrators

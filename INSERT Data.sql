@@ -1,4 +1,3 @@
--- Insurance Data
 INSERT INTO Insurance VALUES
 (1, 'Ontario Health Insurance', 'Ontario', 'Toronto', 'M1M 1M1', '416-555-0101', 'contact@ohi.ca'),
 (2, 'Sun Life', 'Ontario', 'Ottawa', 'K1P 1J1', '613-555-0202', 'info@sunlife.ca'),
@@ -51,7 +50,6 @@ INSERT INTO Insurance VALUES
 (49, 'Medavie Blue Cross', 'Ontario', 'Toronto', 'M4B 1C2', '416-555-4912', 'support@medavie.ca'),
 (50, 'Sun Life', 'Quebec', 'Montreal', 'H3B 1V7', '514-555-5013', 'info@sunlife.ca');
 
--- Patients Data
 INSERT INTO Patients VALUES
 (1, 'Smith', 'John', '1980-05-15', '123 Main St, Toronto', 'M', 1),
 (2, 'Johnson', 'Mary', '1992-08-22', '456 Oak Ave, Ottawa', 'F', 2),
@@ -105,7 +103,6 @@ INSERT INTO Patients VALUES
 (50, 'Gray', 'Avery', '1975-11-19', '876 Spruce Dr, Brampton', 'F', 5);
 
 
--- Physicians Data
 INSERT INTO Physicians VALUES
 (1, 'David', 'Wilson', 'Cardiology', 'david.wilson@lrch.ca'),
 (2, 'Sarah', 'Brown', 'Pediatrics', 'sarah.brown@lrch.ca'),
@@ -113,7 +110,6 @@ INSERT INTO Physicians VALUES
 (4, 'Emily', 'Anderson', 'Neurology', 'emily.anderson@lrch.ca'),
 (5, 'Robert', 'Martinez', 'General Surgery', 'robert.martinez@lrch.ca');
 
--- Rooms Data
 INSERT INTO Rooms VALUES
 (1, 'ICU', 4, 2, 2),
 (2, 'Private', 1, 0, 1),
@@ -121,7 +117,6 @@ INSERT INTO Rooms VALUES
 (4, 'Ward', 4, 3, 1),
 (5, 'Operating Room', 1, 0, 1);
 
--- Appointments Data
 INSERT INTO Appointments VALUES
 (1, 1, 1, '2024-12-01', '09:00:00', 'Scheduled', 'Routine Checkup'),
 (2, 2, 2, '2024-12-01', '10:30:00', 'Scheduled', 'Vaccination'),
@@ -174,7 +169,6 @@ INSERT INTO Appointments VALUES
 (49, 49, 4, '2024-12-25', '11:15:00', 'Scheduled', 'Skin Allergy Review'),
 (50, 50, 5, '2024-12-25', '16:00:00', 'Scheduled', 'Surgery Review');
 
--- Admissions Data
 INSERT INTO Admissions VALUES
 (1, 1, 1, '2024-11-25', 1, 'Intensive care for cardiac issues'),
 (2, 2, 3, '2024-11-26', 1, 'Surgery recovery'),
@@ -227,7 +221,6 @@ INSERT INTO Admissions VALUES
 (49, 49, 5, '2024-12-21', 1, 'Pre-discharge evaluation'),
 (50, 50, 5, '2024-12-21', 1, 'General treatment and observation');
 
--- PatientRecords Data
 INSERT INTO PatientRecords VALUES
 (1, 1, '2024-11-25', 'Prescribed beta blockers for hypertension', '2024-12-25'),  
 (2, 2, '2024-11-26', 'Appendectomy surgery performed successfully', '2024-12-10'),  
@@ -280,7 +273,6 @@ INSERT INTO PatientRecords VALUES
 (49, 49, '2024-12-24', 'Treatment for hypertension', '2025-03-10'),  
 (50, 50, '2024-12-24', 'Diagnosed and treated for asthma', '2025-03-15');  
 
--- InsuranceClaims Data
 INSERT INTO InsuranceClaims VALUES
 (1, 1, 1, 1500.00, '2024-11-25', '2024-11-26'),
 (2, 2, 2, 500.00, '2024-11-26', '2024-11-27'),
@@ -333,7 +325,6 @@ INSERT INTO InsuranceClaims VALUES
 (49, 49, 39, 950.00, '2024-12-21', '2024-12-22'),
 (50, 50, 40, 1500.00, '2024-12-22', '2024-12-23');
 
--- Billing Data
 INSERT INTO Billing VALUES
 (1, 1, 1500.00, '2024-11-25', '2024-12-25', 1, 'Pending'),
 (2, 2, 2500.00, '2024-11-26', '2024-12-26', 2, 'Paid'),
@@ -386,7 +377,6 @@ INSERT INTO Billing VALUES
 (49, 49, 4300.00, '2024-12-21', '2024-12-31', 4, 'Processing'),
 (50, 50, 4400.00, '2024-12-22', '2024-12-31', 5, 'Pending');
 
--- Bed Data
 INSERT INTO Bed VALUES
 (1, 1, 1, 1),
 (2, 1, 2, 4),

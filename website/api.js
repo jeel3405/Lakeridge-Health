@@ -1,14 +1,7 @@
-// ==========================================
-// Lakeridge Health Hospital - API Helper
-// ==========================================
-// This file handles communication with the backend server
-
 const API_BASE_URL = '/api';
 
-// Check if server is available
 let isServerConnected = false;
 
-// Toast notification helper (fallback if app.js not loaded yet)
 function showToastMessage(message, type = 'success') {
     if (typeof showToast === 'function') {
         showToast(message, type);
@@ -28,7 +21,6 @@ async function checkServerConnection() {
     }
 }
 
-// Generic API functions
 async function apiGet(endpoint) {
     try {
         const response = await fetch(`${API_BASE_URL}/${endpoint}`);
@@ -80,11 +72,6 @@ async function apiDelete(endpoint, id) {
     }
 }
 
-// ==========================================
-// Database Sync Functions
-// ==========================================
-
-// Load all data from database
 async function loadAllDataFromDatabase() {
     const connected = await checkServerConnection();
     
@@ -97,7 +84,6 @@ async function loadAllDataFromDatabase() {
     console.log('✅ Connected to database server');
     
     try {
-        // Load all data from API
         const [patients, physicians, appointments, admissions, rooms, billing, insurance, records, claims, beds] = await Promise.all([
             apiGet('patients'),
             apiGet('physicians'),
@@ -111,7 +97,6 @@ async function loadAllDataFromDatabase() {
             apiGet('beds')
         ]);
         
-        // Update local data arrays if data was fetched
         if (patients) patientsData.length = 0, patientsData.push(...patients.map(p => ({
             PatientID: p.PatientID,
             FirstName: p.FirstName,
@@ -189,11 +174,6 @@ async function loadAllDataFromDatabase() {
     }
 }
 
-// ==========================================
-// CRUD Operations with Database Sync
-// ==========================================
-
-// Patients
 async function savePatientToDatabase(patientData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -223,7 +203,6 @@ async function deletePatientFromDatabase(patientId) {
     return await apiDelete('patients', patientId);
 }
 
-// Physicians
 async function savePhysicianToDatabase(physicianData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -239,7 +218,6 @@ async function deletePhysicianFromDatabase(physicianId) {
     return await apiDelete('physicians', physicianId);
 }
 
-// Appointments
 async function saveAppointmentToDatabase(appointmentData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -255,7 +233,6 @@ async function deleteAppointmentFromDatabase(appointmentId) {
     return await apiDelete('appointments', appointmentId);
 }
 
-// Admissions
 async function saveAdmissionToDatabase(admissionData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -271,7 +248,6 @@ async function deleteAdmissionFromDatabase(admissionId) {
     return await apiDelete('admissions', admissionId);
 }
 
-// Rooms
 async function saveRoomToDatabase(roomData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -282,7 +258,6 @@ async function saveRoomToDatabase(roomData, isUpdate = false) {
     }
 }
 
-// Billing
 async function saveBillingToDatabase(billingData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -293,7 +268,6 @@ async function saveBillingToDatabase(billingData, isUpdate = false) {
     }
 }
 
-// Insurance
 async function saveInsuranceToDatabase(insuranceData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -304,7 +278,6 @@ async function saveInsuranceToDatabase(insuranceData, isUpdate = false) {
     }
 }
 
-// Patient Records
 async function saveRecordToDatabase(recordData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -315,7 +288,6 @@ async function saveRecordToDatabase(recordData, isUpdate = false) {
     }
 }
 
-// Insurance Claims
 async function saveClaimToDatabase(claimData, isUpdate = false) {
     if (!isServerConnected) return { success: false };
     
@@ -326,14 +298,11 @@ async function saveClaimToDatabase(claimData, isUpdate = false) {
     }
 }
 
-// Initialize database connection on page load
 document.addEventListener('DOMContentLoaded', async () => {
-    // Small delay to ensure app.js is fully loaded
     setTimeout(async () => {
         const connected = await loadAllDataFromDatabase();
         if (connected) {
             showToastMessage('Connected to database server!', 'success');
-            // Refresh all tables with database data
             if (typeof loadPatientsTable === 'function') loadPatientsTable();
             if (typeof loadPhysiciansTable === 'function') loadPhysiciansTable();
             if (typeof loadAppointmentsTable === 'function') loadAppointmentsTable();

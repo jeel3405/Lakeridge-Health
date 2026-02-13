@@ -1,6 +1,3 @@
-// ==========================================
-// Lakeridge Health Hospital - Backend Server
-// ==========================================
 
 const express = require('express');
 const sql = require('mssql');
@@ -19,10 +16,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// ==========================================
-// Database Configuration
-// ==========================================
-// Azure SQL Configuration (for cloud deployment)
 const dbConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -62,9 +55,6 @@ async function connectDB() {
     }
 }
 
-// ==========================================
-// API Routes - Patients
-// ==========================================
 app.get('/api/patients', async (req, res) => {
     try {
         const db = await getPool();
@@ -135,9 +125,6 @@ app.delete('/api/patients/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Physicians
-// ==========================================
 app.get('/api/physicians', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM Physicians ORDER BY PhysicianID');
@@ -202,9 +189,6 @@ app.delete('/api/physicians/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Appointments
-// ==========================================
 app.get('/api/appointments', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM Appointments ORDER BY AppointmentID');
@@ -273,9 +257,6 @@ app.delete('/api/appointments/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Admissions
-// ==========================================
 app.get('/api/admissions', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM Admissions ORDER BY AdmissionID');
@@ -342,9 +323,6 @@ app.delete('/api/admissions/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Rooms
-// ==========================================
 app.get('/api/rooms', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM Rooms ORDER BY RoomID');
@@ -397,9 +375,6 @@ app.put('/api/rooms/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Billing
-// ==========================================
 app.get('/api/billing', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM Billing ORDER BY BillingID');
@@ -454,9 +429,6 @@ app.put('/api/billing/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Insurance
-// ==========================================
 app.get('/api/insurance', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM Insurance ORDER BY InsuranceID');
@@ -513,9 +485,6 @@ app.put('/api/insurance/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Patient Records
-// ==========================================
 app.get('/api/records', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM PatientRecords ORDER BY RecordID');
@@ -568,9 +537,6 @@ app.put('/api/records/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Insurance Claims
-// ==========================================
 app.get('/api/claims', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM InsuranceClaims ORDER BY InsuranceClaimID');
@@ -625,9 +591,6 @@ app.put('/api/claims/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// API Routes - Beds
-// ==========================================
 app.get('/api/beds', async (req, res) => {
     try {
         const result = await (await getPool()).request().query('SELECT * FROM Bed ORDER BY BedID');
@@ -637,9 +600,6 @@ app.get('/api/beds', async (req, res) => {
     }
 });
 
-// ==========================================
-// Start Server
-// ==========================================
 app.listen(PORT, async () => {
     console.log('\n🏥 Lakeridge Health Hospital Server');
     console.log('====================================');

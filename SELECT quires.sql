@@ -1,5 +1,3 @@
--- 1. Patient Management Queries
--- Find all upcoming appointments for a specific patient
 SELECT 
     a.AppointmentID, 
     ph.FirstName AS PhysicianFirstName, 
@@ -12,8 +10,6 @@ JOIN Physicians ph ON a.PhysicianID = ph.PhysicianID
 WHERE a.PatientID = 1 
   AND a.Date >= GETDATE();
 
--- 2. Room Management Queries
--- Check available rooms by type
 SELECT 
     RoomType, 
     COUNT(*) AS AvailableRooms
@@ -21,8 +17,6 @@ FROM Rooms
 WHERE RoomsAvailable > 0
 GROUP BY RoomType;
 
--- 3. Billing and Insurance Queries
--- Get outstanding payments
 SELECT 
     b.BillingID, 
     p.FirstName, 
@@ -35,8 +29,6 @@ JOIN Patients p ON b.PatientID = p.PatientID
 JOIN Insurance i ON p.InsuranceID = i.InsuranceID
 WHERE b.PaymentStatus = 'Pending';
 
--- 4. Physician Schedule Query
--- Get daily schedule for doctors
 SELECT 
     ph.FirstName, 
     ph.LastName, 
@@ -47,8 +39,6 @@ LEFT JOIN Appointments a ON ph.PhysicianID = a.PhysicianID
   AND CAST(a.Date AS DATE) = CAST(GETDATE() AS DATE)
 GROUP BY ph.PhysicianID, ph.FirstName, ph.LastName;
 
--- 5. Admission Status Query
--- Current hospital occupancy
 SELECT 
     r.RoomType, 
     COUNT(a.AdmissionID) AS OccupiedBeds, 
@@ -57,9 +47,6 @@ FROM Rooms r
 LEFT JOIN Admissions a ON r.RoomID = a.RoomID
 GROUP BY r.RoomType, r.Capacity;
 
--- 6. Patient Management Queries
-
--- Complete patient profile with insurance details
 SELECT 
     p.PatientID,
     p.FirstName,
@@ -72,7 +59,6 @@ SELECT
 FROM Patients p
 JOIN Insurance i ON p.InsuranceID = i.InsuranceID;
 
--- Patient's appointment history
 SELECT 
     a.AppointmentID,
     a.Date,
@@ -86,9 +72,6 @@ JOIN Physicians ph ON a.PhysicianID = ph.PhysicianID
 WHERE a.PatientID = 1
 ORDER BY a.Date DESC;
 
--- 7. Physician Management Queries
-
--- Physician's daily schedule
 SELECT 
     a.Time,
     p.FirstName AS PatientFirstName,
@@ -101,7 +84,6 @@ WHERE a.PhysicianID = 1
   AND CAST(a.Date AS DATE) = CAST(GETDATE() AS DATE)
 ORDER BY a.Time;
 
--- Physician workload analysis
 SELECT 
     ph.PhysicianID,
     ph.FirstName,
@@ -112,9 +94,6 @@ FROM Physicians ph
 LEFT JOIN Appointments a ON ph.PhysicianID = a.PhysicianID
 GROUP BY ph.PhysicianID, ph.FirstName, ph.LastName;
 
--- 8. Room and Bed Management Queries
-
--- Current room occupancy status
 SELECT 
     r.RoomID,
     r.RoomType,
@@ -126,7 +105,6 @@ LEFT JOIN Bed b ON r.RoomID = b.RoomID
   AND b.PatientID IS NOT NULL
 GROUP BY r.RoomID, r.RoomType, r.Capacity;
 
--- Detailed bed assignment
 SELECT 
     b.BedID,
     r.RoomType,
@@ -137,9 +115,6 @@ FROM Bed b
 LEFT JOIN Rooms r ON b.RoomID = r.RoomID
 LEFT JOIN Patients p ON b.PatientID = p.PatientID;
 
--- 9. Financial Management Queries
-
--- Outstanding payments report
 SELECT 
     b.BillingID,
     p.FirstName,
@@ -154,7 +129,6 @@ JOIN Patients p ON b.PatientID = p.PatientID
 LEFT JOIN InsuranceClaims ic ON b.InsuranceClaimID = ic.InsuranceClaimID
 WHERE b.PaymentStatus = 'Pending';
 
--- Insurance claim status report
 SELECT 
     ic.InsuranceClaimID,
     p.FirstName,
@@ -171,9 +145,6 @@ FROM InsuranceClaims ic
 JOIN Patients p ON ic.PatientID = p.PatientID
 JOIN Insurance i ON ic.InsuranceID = i.InsuranceID;
 
--- 10. Administrative Queries
-
--- Monthly admission statistics
 SELECT 
     FORMAT(a.AdmissionDate, 'yyyy-MM') AS Month,
     COUNT(*) AS TotalAdmissions,
@@ -183,7 +154,6 @@ FROM Admissions a
 GROUP BY FORMAT(a.AdmissionDate, 'yyyy-MM')
 ORDER BY Month DESC;
 
--- Treatment tracking
 SELECT 
     pr.RecordID,
     p.FirstName,

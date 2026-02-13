@@ -1,6 +1,3 @@
-// ==========================================
-// Lakeridge Health Hospital - Application JS
-// ==========================================
 
 // DOM Elements
 const navItems = document.querySelectorAll('.nav-item');
@@ -24,9 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initForms();
 });
 
-// ==========================================
-// Navigation
-// ==========================================
 function initNavigation() {
     navItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -47,9 +41,6 @@ function initNavigation() {
     });
 }
 
-// ==========================================
-// Dashboard
-// ==========================================
 function initDashboard() {
     // Update stats
     document.getElementById('totalPatients').textContent = patientsData.length;
@@ -97,9 +88,6 @@ function loadRoomStatusChart() {
     }).join('');
 }
 
-// ==========================================
-// Patients
-// ==========================================
 function initPatients() {
     loadPatientsTable();
     
@@ -281,9 +269,6 @@ async function deletePatient(id) {
     }
 }
 
-// ==========================================
-// Physicians
-// ==========================================
 function initPhysicians() {
     loadPhysiciansTable();
     populateSpecializationFilter();
@@ -429,9 +414,6 @@ function deletePhysician(id) {
     }
 }
 
-// ==========================================
-// Appointments
-// ==========================================
 function initAppointments() {
     loadAppointmentsTable();
     
@@ -557,9 +539,6 @@ function deleteAppointment(id) {
     }
 }
 
-// ==========================================
-// Admissions
-// ==========================================
 function initAdmissions() {
     loadAdmissionsTable();
     
@@ -673,9 +652,6 @@ function deleteAdmission(id) {
     }
 }
 
-// ==========================================
-// Rooms
-// ==========================================
 function initRooms() {
     loadRoomsTable();
     loadBedsTable();
@@ -863,9 +839,6 @@ function viewBed(id) {
     openModal('detailsModal');
 }
 
-// ==========================================
-// Billing
-// ==========================================
 function initBilling() {
     loadBillingTable();
     updateBillingStats();
@@ -983,9 +956,6 @@ function editBilling(id) {
     openModal('billingModal');
 }
 
-// ==========================================
-// Insurance
-// ==========================================
 function initInsurance() {
     loadInsuranceTable();
     populateProvinceFilter();
@@ -1110,9 +1080,6 @@ function editInsurance(id) {
     openModal('insuranceModal');
 }
 
-// ==========================================
-// Patient Records
-// ==========================================
 function initRecords() {
     loadRecordsTable();
     
@@ -1207,9 +1174,6 @@ function editRecord(id) {
     openModal('recordModal');
 }
 
-// ==========================================
-// Insurance Claims
-// ==========================================
 function initClaims() {
     loadClaimsTable();
     
@@ -1322,9 +1286,6 @@ function editClaim(id) {
     openModal('claimModal');
 }
 
-// ==========================================
-// Global Search
-// ==========================================
 function initGlobalSearch() {
     globalSearch.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
@@ -1356,9 +1317,6 @@ function initGlobalSearch() {
     });
 }
 
-// ==========================================
-// Forms
-// ==========================================
 function initForms() {
     // Populate dropdown selects
     populatePatientInsuranceDropdown();
@@ -1786,9 +1744,6 @@ function populateAppointmentForm() {
     });
 }
 
-// ==========================================
-// Modal Functions
-// ==========================================
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     modal.classList.add('active');
@@ -1910,9 +1865,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// ==========================================
-// Toast Notifications
-// ==========================================
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
@@ -1933,9 +1885,6 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// ==========================================
-// User Authentication & Role Management
-// ==========================================
 function toggleUserDropdown() {
     const dropdown = document.querySelector('.user-dropdown');
     dropdown.classList.toggle('open');
