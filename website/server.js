@@ -17,10 +17,10 @@ app.get('/', (req, res) => {
 });
 
 const dbConfig = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    server: process.env.DB_SERVER,
-    database: process.env.DB_NAME,
+    user: 'sqladmin',
+    password: 'Jeel@3405d',
+    server: 'lakeridge-health-server.database.windows.net',
+    database: 'lakeridge_health',
     options: {
         encrypt: true,
         trustServerCertificate: false
